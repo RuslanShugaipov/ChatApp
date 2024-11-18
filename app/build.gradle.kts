@@ -1,7 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
+
+val apikeyPropertiesFile = rootProject.file("./app/apikey.properties")
+val apikeyProperties = Properties()
+apikeyProperties.load(apikeyPropertiesFile.inputStream())
 
 android {
     namespace = "com.ruslanshugaipov.chatapp"
@@ -14,7 +20,24 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "WIDGET_TOKEN",
+            apikeyProperties["WIDGET_TOKEN"] as String? ?: "null"
+        )
+        buildConfigField("String", "BASE_HOST", apikeyProperties["BASE_HOST"] as String? ?: "null")
+        buildConfigField("String", "WS_HOST", apikeyProperties["WS_HOST"] as String? ?: "null")
+        buildConfigField(
+            "String",
+            "STORAGE_HOST",
+            apikeyProperties["STORAGE_HOST"] as String? ?: "null"
+        )
+        buildConfigField(
+            "String",
+            "CLIENT_TOKEN",
+            apikeyProperties["CLIENT_TOKEN"] as String? ?: "null"
+        )
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -38,6 +61,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -54,12 +78,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.chat2desk)
+
+    implementation(libs.coil.compose)
+
+    implementation(libs.kotlinx.datetime)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
